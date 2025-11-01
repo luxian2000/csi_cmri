@@ -1,1 +1,0 @@
-/Users/luxian/CodeSpace/define_mind.py
