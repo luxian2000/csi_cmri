@@ -1,0 +1,10 @@
+{
+    "final_val_loss": -0.9997574090957642,
+    "all_val_losses": [
+        -0.9997574090957642
+    ],
+    "best_val_loss": -0.9997574090957642,
+    "best_epoch": 1,
+    "val_data_size": 2000,
+    "evaluation_time": "2025-10-19 17:43:44"
+}

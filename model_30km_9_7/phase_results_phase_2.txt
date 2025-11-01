@@ -1,0 +1,30 @@
+
+PHASE TRAINING RESULTS - PHASE_2
+==================================================
+
+1. PHASE INFORMATION
+====================
+Phase Name: phase_2
+Training Samples: 8000 to 16000
+Total Training Time: 11444.14 seconds
+Completion Time: 2025-10-22 13:05:01
+Learning Rate: 0.008000 (fixed throughout phase)
+
+2. PERFORMANCE RESULTS
+====================
+Final Training Loss: -0.276440
+Validation Loss: -0.278937
+Test Loss: -0.278937
+Validation Time: 2322.36 seconds
+Test Time: 2321.76 seconds
+
+3. VALIDATION AND TESTING DETAILS
+====================
+Validation Samples: 2000 (randomly selected from 12000)
+Test Samples: 2000 (randomly selected from 12000)
+Validation Indices: [2271, 3495, 10265, 5739, 360]... (showing first 5 of 2000)
+Test Indices: [9098, 9663, 3288, 250, 1644]... (showing first 5 of 2000)
+
+==================================================
+Results Saved: 2025-10-22 13:05:01
+==================================================

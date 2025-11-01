@@ -1,0 +1,16 @@
+{
+    "total_epochs": 1,
+    "total_batches": 250,
+    "final_train_loss": -0.8314353548996151,
+    "final_val_loss": -0.9997574090957642,
+    "test_loss": -0.999756932258606,
+    "total_training_time": 3802.6071531772614,
+    "output_dim": 128,
+    "completion_time": "2025-10-19 17:43:44",
+    "data_statistics": {
+        "train_samples": 8000,
+        "val_samples": 2000,
+        "test_samples": 2000,
+        "total_training_samples": 8000
+    }
+}

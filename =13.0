@@ -1,0 +1,8 @@
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Collecting cupy-cuda12x
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/fc/d9/5c5077243cd92368c3eccecdbf91d76db15db338169042ffd1647533c6b1/cupy_cuda12x-13.6.0-cp311-cp311-manylinux2014_x86_64.whl (113.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 113.0/113.0 MB 91.9 MB/s  0:00:01
+Requirement already satisfied: numpy<2.6,>=1.22 in /home/luxian/anaconda3/envs/penny/lib/python3.11/site-packages (from cupy-cuda12x) (2.3.3)
+Requirement already satisfied: fastrlock>=0.5 in /home/luxian/anaconda3/envs/penny/lib/python3.11/site-packages (from cupy-cuda12x) (0.8.3)
+Installing collected packages: cupy-cuda12x
+Successfully installed cupy-cuda12x-13.6.0

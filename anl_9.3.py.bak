@@ -1,0 +1,440 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import json
+import torch
+import os
+from scipy import stats
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set paths
+LOCAL = "./"
+FOLDER = "model_30km_joint/"
+
+# Create analysis plots directory
+os.makedirs(LOCAL + FOLDER + "analysis_plots/", exist_ok=True)
+
+print("=" * 60)
+print("Starting Analysis of Training, Validation, and Test Data")
+print("=" * 60)
+
+def load_and_analyze_data():
+    """Load and analyze training, validation, and test data"""
+    
+    # 1. Load raw data
+    print("1. Loading raw data...")
+    PATH = "../DataSpace/csi_cmri/"
+    data = np.load(PATH + "CSI_channel_30km.npy")
+    
+    # Data splitting
+    train_data = data[:8000]  # 8000 training samples
+    val_data = data[8000:10000]  # 2000 validation samples
+    test_data = data[10000:12000]  # 2000 test samples
+    
+    print(f"Raw data shape: {data.shape}")
+    print(f"Training data: {train_data.shape}")
+    print(f"Validation data: {val_data.shape}")
+    print(f"Test data: {test_data.shape}")
+    
+    # 2. Load training results
+    print("\n2. Loading training results...")
+    try:
+        with open(LOCAL + FOLDER + 'training_results.txt', 'r') as f:
+            training_log = f.read()
+        print("Training log loaded successfully")
+    except:
+        training_log = ""
+        print("Training log loading failed")
+    
+    try:
+        with open(LOCAL + FOLDER + 'training_summary.json', 'r') as f:
+            training_summary = json.load(f)
+        print("Training summary loaded successfully")
+    except:
+        training_summary = {}
+        print("Training summary loading failed")
+    
+    try:
+        with open(LOCAL + FOLDER + 'validation_results.json', 'r') as f:
+            validation_results = json.load(f)
+        print("Validation results loaded successfully")
+    except:
+        validation_results = {}
+        print("Validation results loading failed")
+    
+    try:
+        with open(LOCAL + FOLDER + 'test_results.json', 'r') as f:
+            test_results = json.load(f)
+        print("Test results loaded successfully")
+    except:
+        test_results = {}
+        print("Test results loading failed")
+    
+    return data, train_data, val_data, test_data, training_summary, validation_results, test_results
+
+def plot_data_distribution(train_data, val_data, test_data):
+    """Plot data distribution charts"""
+    print("\n3. Plotting data distribution charts...")
+    
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    
+    # Data quantity distribution
+    datasets = ['Training Data', 'Validation Data', 'Test Data']
+    counts = [len(train_data), len(val_data), len(test_data)]
+    
+    axes[0, 0].bar(datasets, counts, color=['blue', 'orange', 'green'], alpha=0.7)
+    axes[0, 0].set_title('Data Quantity Distribution')
+    axes[0, 0].set_ylabel('Number of Samples')
+    for i, v in enumerate(counts):
+        axes[0, 0].text(i, v + 50, str(v), ha='center', va='bottom')
+    
+    # Data shape information
+    shapes_info = f"""
+    Training Data: {train_data.shape}
+    Validation Data: {val_data.shape}  
+    Test Data: {test_data.shape}
+    Total Features: {train_data.shape[1]}
+    """
+    axes[0, 1].text(0.1, 0.9, shapes_info, transform=axes[0, 1].transAxes, 
+                    fontsize=12, verticalalignment='top', fontfamily='monospace')
+    axes[0, 1].set_title('Data Shape Information')
+    axes[0, 1].axis('off')
+    
+    # Data statistics
+    train_stats = {
+        'Mean': np.mean(train_data),
+        'Std Dev': np.std(train_data),
+        'Min': np.min(train_data),
+        'Max': np.max(train_data)
+    }
+    
+    val_stats = {
+        'Mean': np.mean(val_data),
+        'Std Dev': np.std(val_data),
+        'Min': np.min(val_data),
+        'Max': np.max(val_data)
+    }
+    
+    stats_df = pd.DataFrame([train_stats, val_stats], index=['Training Data', 'Validation Data'])
+    
+    # Create statistics table
+    table = axes[1, 0].table(cellText=stats_df.round(4).values,
+                            rowLabels=stats_df.index,
+                            colLabels=stats_df.columns,
+                            cellLoc='center',
+                            loc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1, 2)
+    axes[1, 0].set_title('Data Statistics')
+    axes[1, 0].axis('off')
+    
+    # Data distribution histogram - use random sampling to avoid memory issues
+    n_samples = min(10000, len(train_data.flatten()))
+    train_samples = np.random.choice(train_data.flatten(), n_samples, replace=False)
+    val_samples = np.random.choice(val_data.flatten(), n_samples, replace=False)
+    
+    axes[1, 1].hist(train_samples, bins=50, alpha=0.7, label='Training Data', density=True)
+    axes[1, 1].hist(val_samples, bins=50, alpha=0.7, label='Validation Data', density=True)
+    axes[1, 1].set_title('Data Value Distribution Histogram (Random Sampling)')
+    axes[1, 1].set_xlabel('Value')
+    axes[1, 1].set_ylabel('Density')
+    axes[1, 1].legend()
+    axes[1, 1].grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(LOCAL + FOLDER + 'analysis_plots/data_distribution.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print("Data distribution charts saved")
+
+def plot_training_curves(training_summary, validation_results):
+    """Plot training curves"""
+    print("\n4. Plotting training curves...")
+    
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+    
+    # Training and validation loss curves
+    train_losses = []
+    val_losses = []
+    
+    # Try to load loss data from checkpoint files
+    checkpoint_files = [f for f in os.listdir(LOCAL + FOLDER) if f.startswith('checkpoint_') and f.endswith('.pth')]
+    checkpoint_files.sort()
+    
+    for checkpoint_file in checkpoint_files:
+        try:
+            checkpoint = torch.load(LOCAL + FOLDER + checkpoint_file, map_location='cpu')
+            if 'avg_loss' in checkpoint:
+                train_losses.append(float(checkpoint['avg_loss']))
+        except Exception as e:
+            print(f"Failed to load checkpoint {checkpoint_file}: {e}")
+            continue
+    
+    # Load validation losses from validation results
+    if 'all_val_losses' in validation_results:
+        val_losses = validation_results['all_val_losses']
+    
+    if train_losses:
+        axes[0].plot(range(1, len(train_losses) + 1), train_losses, 'b-o', label='Training Loss', linewidth=2, markersize=4)
+    if val_losses:
+        axes[0].plot(range(1, len(val_losses) + 1), val_losses, 'r-s', label='Validation Loss', linewidth=2, markersize=4)
+    
+    axes[0].set_xlabel('Checkpoint Batch')
+    axes[0].set_ylabel('Loss')
+    axes[0].set_title('Training and Validation Loss Curves')
+    axes[0].legend()
+    axes[0].grid(True, alpha=0.3)
+    
+    # Training summary information
+    if training_summary:
+        summary_text = f"""
+Training Configuration:
+----------------------
+Epochs: {training_summary.get('total_epochs', 'N/A')}
+Batches: {training_summary.get('total_batches', 'N/A')}
+Batch Size: {training_summary.get('batch_size', 'N/A')}
+Output Dimension: {training_summary.get('output_dim', 'N/A')}
+
+Final Results:
+--------------
+Training Loss: {training_summary.get('final_train_loss', 'N/A'):.6f}
+Validation Loss: {training_summary.get('final_val_loss', 'N/A'):.6f}
+Test Loss: {training_summary.get('test_loss', 'N/A'):.6f}
+
+Training Time:
+--------------
+Total Time: {training_summary.get('total_training_time', 'N/A'):.2f} seconds
+        """
+        axes[1].text(0.05, 0.95, summary_text, transform=axes[1].transAxes, 
+                    fontsize=10, verticalalignment='top', fontfamily='monospace')
+        axes[1].set_title('Training Summary')
+        axes[1].axis('off')
+    
+    plt.tight_layout()
+    plt.savefig(LOCAL + FOLDER + 'analysis_plots/training_curves.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print("Training curves saved")
+
+def plot_feature_analysis(train_data, val_data, test_data):
+    """Plot feature analysis charts"""
+    print("\n5. Plotting feature analysis charts...")
+    
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    
+    # Randomly select features for visualization
+    n_features = min(5, train_data.shape[1])  # Reduce number of features to avoid memory issues
+    feature_indices = np.random.choice(train_data.shape[1], n_features, replace=False)
+    
+    # Feature value distribution box plot
+    feature_data = []
+    labels = []
+    for idx in feature_indices:
+        # Random sampling to avoid large data volume
+        train_sample = np.random.choice(train_data[:, idx], min(1000, len(train_data)), replace=False)
+        val_sample = np.random.choice(val_data[:, idx], min(1000, len(val_data)), replace=False)
+        test_sample = np.random.choice(test_data[:, idx], min(1000, len(test_data)), replace=False)
+        
+        feature_data.extend([train_sample, val_sample, test_sample])
+        labels.extend([f'F{idx}-Train', f'F{idx}-Val', f'F{idx}-Test'])
+    
+    box = axes[0, 0].boxplot(feature_data, labels=labels, showfliers=False)
+    axes[0, 0].set_title('Feature Value Distribution Box Plot (5 Random Features)')
+    axes[0, 0].set_ylabel('Feature Value')
+    plt.setp(axes[0, 0].xaxis.get_majorticklabels(), rotation=45)
+    
+    # Correlation heatmap (first 10 features)
+    n_corr_features = min(10, train_data.shape[1])
+    corr_indices = np.random.choice(train_data.shape[1], n_corr_features, replace=False)
+    
+    # Use random sampling for correlation calculation
+    n_samples = min(1000, len(train_data))
+    sample_indices = np.random.choice(len(train_data), n_samples, replace=False)
+    corr_matrix = np.corrcoef(train_data[sample_indices][:, corr_indices].T)
+    
+    im = axes[0, 1].imshow(corr_matrix, cmap='coolwarm', aspect='auto', vmin=-1, vmax=1)
+    axes[0, 1].set_title('Feature Correlation Heatmap (10 Random Features)')
+    plt.colorbar(im, ax=axes[0, 1])
+    
+    # Dataset mean comparison
+    train_mean = np.mean(train_data, axis=0)
+    val_mean = np.mean(val_data, axis=0)
+    test_mean = np.mean(test_data, axis=0)
+    
+    # Randomly select 50 feature points for display
+    n_show = min(50, len(train_mean))
+    show_indices = np.random.choice(len(train_mean), n_show, replace=False)
+    
+    axes[1, 0].plot(show_indices, train_mean[show_indices], 'bo-', alpha=0.7, label='Training Mean', markersize=2)
+    axes[1, 0].plot(show_indices, val_mean[show_indices], 'ro-', alpha=0.7, label='Validation Mean', markersize=2)
+    axes[1, 0].plot(show_indices, test_mean[show_indices], 'go-', alpha=0.7, label='Test Mean', markersize=2)
+    axes[1, 0].set_xlabel('Feature Index')
+    axes[1, 0].set_ylabel('Mean Value')
+    axes[1, 0].set_title('Dataset Mean Comparison (50 Random Features)')
+    axes[1, 0].legend()
+    axes[1, 0].grid(True, alpha=0.3)
+    
+    # Data quality metrics
+    metrics = {
+        'SNR (Training)': np.mean(train_data) / np.std(train_data),
+        'SNR (Validation)': np.mean(val_data) / np.std(val_data),
+        'Dynamic Range (Training)': np.max(train_data) - np.min(train_data),
+        'Dynamic Range (Validation)': np.max(val_data) - np.min(val_data),
+    }
+    
+    metrics_text = "\n".join([f"{k}: {v:.4f}" for k, v in metrics.items()])
+    axes[1, 1].text(0.1, 0.9, metrics_text, transform=axes[1, 1].transAxes, 
+                    fontsize=11, verticalalignment='top', fontfamily='monospace')
+    axes[1, 1].set_title('Data Quality Metrics')
+    axes[1, 1].axis('off')
+    
+    plt.tight_layout()
+    plt.savefig(LOCAL + FOLDER + 'analysis_plots/feature_analysis.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print("Feature analysis charts saved")
+
+def plot_performance_comparison(training_summary, validation_results, test_results):
+    """Plot performance comparison charts"""
+    print("\n6. Plotting performance comparison charts...")
+    
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+    
+    # Final performance comparison
+    if training_summary and validation_results and test_results:
+        metrics = ['Training Loss', 'Validation Loss', 'Test Loss']
+        values = [
+            training_summary.get('final_train_loss', 0),
+            training_summary.get('final_val_loss', 0),
+            test_results.get('test_loss', 0)
+        ]
+        
+        bars = axes[0].bar(metrics, values, color=['blue', 'orange', 'green'], alpha=0.7)
+        axes[0].set_title('Final Performance Comparison')
+        axes[0].set_ylabel('Loss Value')
+        
+        # Add values on bars
+        for bar, value in zip(bars, values):
+            height = bar.get_height()
+            axes[0].text(bar.get_x() + bar.get_width()/2., height + 0.01,
+                        f'{value:.6f}', ha='center', va='bottom', fontsize=10)
+    
+    # Training process statistics
+    if training_summary:
+        stats_data = {
+            'Total Epochs': training_summary.get('total_epochs', 0),
+            'Total Batches': training_summary.get('total_batches', 0),
+            'Total Samples': training_summary.get('total_training_samples', 0),
+            'Training Time (s)': training_summary.get('total_training_time', 0)
+        }
+        
+        stats_text = "\n".join([f"{k}: {v}" for k, v in stats_data.items()])
+        axes[1].text(0.1, 0.9, stats_text, transform=axes[1].transAxes, 
+                    fontsize=12, verticalalignment='top', fontfamily='monospace',
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor="lightblue", alpha=0.5))
+        axes[1].set_title('Training Process Statistics')
+        axes[1].axis('off')
+    
+    plt.tight_layout()
+    plt.savefig(LOCAL + FOLDER + 'analysis_plots/performance_comparison.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print("Performance comparison charts saved")
+
+def generate_analysis_report(train_data, val_data, test_data, training_summary, validation_results, test_results):
+    """Generate analysis report"""
+    print("\n7. Generating analysis report...")
+    
+    # Calculate dataset similarity - use random sampling to avoid memory issues
+    n_samples = min(1000, len(train_data), len(val_data))
+    train_sample = np.random.choice(train_data.flatten(), n_samples, replace=False)
+    val_sample = np.random.choice(val_data.flatten(), n_samples, replace=False)
+    
+    try:
+        similarity = np.corrcoef(train_sample, val_sample)[0, 1]
+    except:
+        similarity = 0.0
+    
+    report = f"""
+Data Analysis and Training Results Report
+{'=' * 50}
+
+1. Data Overview
+----------------
+Total Samples: {len(train_data) + len(val_data) + len(test_data)}
+Training Samples: {len(train_data)}
+Validation Samples: {len(val_data)}  
+Test Samples: {len(test_data)}
+Feature Dimension: {train_data.shape[1]}
+
+2. Data Statistics
+------------------
+Training Data:
+  Mean: {np.mean(train_data):.6f}
+  Std Dev: {np.std(train_data):.6f}
+  Min: {np.min(train_data):.6f}
+  Max: {np.max(train_data):.6f}
+
+Validation Data:
+  Mean: {np.mean(val_data):.6f}
+  Std Dev: {np.std(val_data):.6f}
+  Min: {np.min(val_data):.6f}
+  Max: {np.max(val_data):.6f}
+
+3. Training Results
+-------------------
+Final Training Loss: {training_summary.get('final_train_loss', 'N/A') if training_summary else 'N/A'}
+Final Validation Loss: {training_summary.get('final_val_loss', 'N/A') if training_summary else 'N/A'}
+Test Loss: {test_results.get('test_loss', 'N/A') if test_results else 'N/A'}
+
+4. Training Configuration
+-------------------------
+Output Dimension: {training_summary.get('output_dim', 'N/A') if training_summary else 'N/A'}
+Training Epochs: {training_summary.get('total_epochs', 'N/A') if training_summary else 'N/A'}
+Total Batches: {training_summary.get('total_batches', 'N/A') if training_summary else 'N/A'}
+Batch Size: {training_summary.get('batch_size', 'N/A') if training_summary else 'N/A'}
+
+5. Data Quality Assessment
+--------------------------
+Training SNR: {np.mean(train_data) / np.std(train_data):.4f}
+Validation SNR: {np.mean(val_data) / np.std(val_data):.4f}
+Dataset Similarity (Train vs Val): {similarity:.4f}
+
+Generated: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
+    """
+    
+    with open(LOCAL + FOLDER + 'analysis_plots/analysis_report.txt', 'w', encoding='utf-8') as f:
+        f.write(report)
+    
+    print("Analysis report saved")
+
+def main():
+    """Main function"""
+    # Load data
+    data, train_data, val_data, test_data, training_summary, validation_results, test_results = load_and_analyze_data()
+    
+    # Plot various analysis charts
+    plot_data_distribution(train_data, val_data, test_data)
+    plot_training_curves(training_summary, validation_results)
+    plot_feature_analysis(train_data, val_data, test_data)
+    plot_performance_comparison(training_summary, validation_results, test_results)
+    
+    # Generate analysis report
+    generate_analysis_report(train_data, val_data, test_data, training_summary, validation_results, test_results)
+    
+    print("\n" + "=" * 60)
+    print("Data Analysis Completed!")
+    print("=" * 60)
+    print(f"All analysis results saved to: {LOCAL + FOLDER}analysis_plots/")
+    print("Files included:")
+    print("  - data_distribution.png: Data distribution charts")
+    print("  - training_curves.png: Training curves") 
+    print("  - feature_analysis.png: Feature analysis charts")
+    print("  - performance_comparison.png: Performance comparison charts")
+    print("  - analysis_report.txt: Detailed analysis report")
+
+if __name__ == "__main__":
+    main()

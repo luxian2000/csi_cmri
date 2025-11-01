@@ -1,0 +1,11 @@
+{
+    "test_loss": -0.999756932258606,
+    "test_data_size": 2000,
+    "evaluation_time": "2025-10-19 17:43:44",
+    "evaluation_duration": 752.8833990097046,
+    "model_performance": {
+        "final_train_loss": -0.8314353548996151,
+        "final_val_loss": -0.9997574090957642,
+        "test_loss": -0.999756932258606
+    }
+}

@@ -1,0 +1,116 @@
+
+TRAINING CONFIGURATION
+==================================================
+
+1. DATA CONFIGURATION
+====================
+Total Samples: 80000
+Training Samples: 56000
+Validation Samples: 12000
+Test Samples: 12000
+Validation Subset per Phase: 2000
+Test Subset per Phase: 2000
+Input Dimension: 2560
+Output Dimension: 128
+
+2. TRAINING PHASES
+====================
+Number of Phases: 7
+Samples per Phase: 8000
+
+Phase Details:
+  Phase 1: phase_1
+    Samples: 0 to 8000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+  Phase 2: phase_2
+    Samples: 8000 to 16000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+  Phase 3: phase_3
+    Samples: 16000 to 24000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+  Phase 4: phase_4
+    Samples: 24000 to 32000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+  Phase 5: phase_5
+    Samples: 32000 to 40000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+  Phase 6: phase_6
+    Samples: 40000 to 48000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+  Phase 7: phase_7
+    Samples: 48000 to 56000 (8000 samples)
+    Batches: 250
+    Batch Size: 32
+    Total Samples: 8000
+
+
+3. MODEL ARCHITECTURE
+====================
+Quantum Bits:
+  Original Qubits (IMG_QUBITS): 12
+  Target Qubits (COM_QUBITS): 7
+  All Qubits: 13
+  Ansatz Qubits: 5
+
+Classical Neural Network:
+  Input Dimension: 2560
+  Output Dimension: 128
+  Weight Shape: (2560, 128)
+  Bias Shape: (1, 128)
+
+Quantum Circuit:
+  Number of Layers: 4
+  Quantum Weight Shape: (4, 13, 3)
+
+4. TRAINING PARAMETERS
+====================
+Optimizer: Adam
+Learning Rate: 0.01
+Learning Rate Scheduler: StepLR (step_size=50, gamma=0.8)
+Loss Function: Custom quantum-classical hybrid loss
+
+5. INCREMENTAL TRAINING STRATEGY
+====================
+Training Type: Sequential Incremental Training
+Parameter Loading: Each phase loads parameters from previous phase
+Model Continuity: Continuous parameter updates across phases
+
+6. VALIDATION AND TESTING
+====================
+Validation: Random 2000 samples from 12000 total
+Testing: Random 2000 samples from 12000 total
+Results Logging: After each phase completion
+
+7. CHECKPOINT AND LOGGING
+====================
+Loss Logging: Every 10 batches
+Model Checkpoint: Every 50 batches
+Progress File: Each phase has separate progress file
+Model Save: After each phase completion
+
+8. HARDWARE CONFIGURATION
+====================
+Quantum Device: lightning.gpu
+Classical Device: CPU/GPU (auto)
+
+==================================================
+Configuration Created: 2025-10-21 09:18:46
+==================================================

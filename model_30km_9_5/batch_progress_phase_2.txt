@@ -1,0 +1,50 @@
+Training Progress - phase_2
+==================================================
+Start: 2025-10-20 10:44:02
+Samples: 8000 to 16000 (8000 samples)
+Batches: 250, Batch size: 32
+Total training samples: 8000
+Validation samples: 2000 (from 12000)
+Test samples: 2000 (from 12000)
+==================================================
+
+2025-10-20 10:46:00 - [phase_2] Batch 10/250 (4.0%) - Loss: -0.998990 - Avg Loss: -0.998856 - Time: 11.69s
+2025-10-20 10:48:00 - [phase_2] Batch 20/250 (8.0%) - Loss: -0.999815 - Avg Loss: -0.999231 - Time: 12.00s
+2025-10-20 10:50:01 - [phase_2] Batch 30/250 (12.0%) - Loss: -0.999878 - Avg Loss: -0.999425 - Time: 12.15s
+2025-10-20 10:52:04 - [phase_2] Batch 40/250 (16.0%) - Loss: -0.999922 - Avg Loss: -0.999544 - Time: 12.35s
+2025-10-20 10:54:09 - [phase_2] Batch 50/250 (20.0%) - Loss: -0.999943 - Avg Loss: -0.999623 - Time: 12.51s
+2025-10-20 10:54:09 - Checkpoint saved: ./model_30km_9_5/checkpoint_phase_2_batch_50.pth
+2025-10-20 10:56:15 - [phase_2] Batch 60/250 (24.0%) - Loss: -0.999957 - Avg Loss: -0.999679 - Time: 12.64s
+2025-10-20 10:58:24 - [phase_2] Batch 70/250 (28.0%) - Loss: -0.999965 - Avg Loss: -0.999719 - Time: 13.74s
+2025-10-20 11:00:29 - [phase_2] Batch 80/250 (32.0%) - Loss: -0.999969 - Avg Loss: -0.999750 - Time: 12.71s
+2025-10-20 11:02:35 - [phase_2] Batch 90/250 (36.0%) - Loss: -0.999973 - Avg Loss: -0.999775 - Time: 12.53s
+2025-10-20 11:04:42 - [phase_2] Batch 100/250 (40.0%) - Loss: -0.999975 - Avg Loss: -0.999795 - Time: 12.58s
+2025-10-20 11:04:42 - Checkpoint saved: ./model_30km_9_5/checkpoint_phase_2_batch_100.pth
+2025-10-20 11:06:46 - [phase_2] Batch 110/250 (44.0%) - Loss: -0.999977 - Avg Loss: -0.999811 - Time: 12.33s
+2025-10-20 11:08:51 - [phase_2] Batch 120/250 (48.0%) - Loss: -0.999979 - Avg Loss: -0.999825 - Time: 12.57s
+2025-10-20 11:10:57 - [phase_2] Batch 130/250 (52.0%) - Loss: -0.999981 - Avg Loss: -0.999837 - Time: 12.37s
+2025-10-20 11:13:02 - [phase_2] Batch 140/250 (56.0%) - Loss: -0.999983 - Avg Loss: -0.999847 - Time: 12.43s
+2025-10-20 11:15:09 - [phase_2] Batch 150/250 (60.0%) - Loss: -0.999985 - Avg Loss: -0.999857 - Time: 13.10s
+2025-10-20 11:15:09 - Checkpoint saved: ./model_30km_9_5/checkpoint_phase_2_batch_150.pth
+2025-10-20 11:17:16 - [phase_2] Batch 160/250 (64.0%) - Loss: -0.999986 - Avg Loss: -0.999865 - Time: 12.42s
+2025-10-20 11:19:22 - [phase_2] Batch 170/250 (68.0%) - Loss: -0.999987 - Avg Loss: -0.999872 - Time: 12.73s
+2025-10-20 11:21:29 - [phase_2] Batch 180/250 (72.0%) - Loss: -0.999988 - Avg Loss: -0.999878 - Time: 12.59s
+2025-10-20 11:23:36 - [phase_2] Batch 190/250 (76.0%) - Loss: -0.999989 - Avg Loss: -0.999884 - Time: 12.51s
+2025-10-20 11:25:44 - [phase_2] Batch 200/250 (80.0%) - Loss: -0.999990 - Avg Loss: -0.999889 - Time: 12.75s
+2025-10-20 11:25:44 - Checkpoint saved: ./model_30km_9_5/checkpoint_phase_2_batch_200.pth
+2025-10-20 11:27:51 - [phase_2] Batch 210/250 (84.0%) - Loss: -0.999991 - Avg Loss: -0.999894 - Time: 12.43s
+2025-10-20 11:29:56 - [phase_2] Batch 220/250 (88.0%) - Loss: -0.999992 - Avg Loss: -0.999899 - Time: 12.45s
+2025-10-20 11:32:02 - [phase_2] Batch 230/250 (92.0%) - Loss: -0.999992 - Avg Loss: -0.999903 - Time: 12.45s
+2025-10-20 11:34:07 - [phase_2] Batch 240/250 (96.0%) - Loss: -0.999993 - Avg Loss: -0.999906 - Time: 12.45s
+2025-10-20 11:36:14 - [phase_2] Batch 250/250 (100.0%) - Loss: -0.999994 - Avg Loss: -0.999910 - Time: 12.55s
+2025-10-20 11:36:14 - Checkpoint saved: ./model_30km_9_5/checkpoint_phase_2_batch_250.pth
+2025-10-20 11:49:05 - [phase_2] Training completed: Train Loss: -0.999910, Val Loss: -0.999999, LR: 0.010000, Val Time: 770.48s, Total Time: 3903.01s
+
+
+[phase_2] Training completed!
+  ↳ Final Train Loss: -0.999910
+  ↳ Validation Loss: -0.999999 (on 2000 samples)
+  ↳ Test Loss: -0.999999 (on 2000 samples)
+  ↳ Total Time: 3903.01s
+  ↳ Final Learning Rate: 0.010000
+Phase completed at: 2025-10-20 12:02:04

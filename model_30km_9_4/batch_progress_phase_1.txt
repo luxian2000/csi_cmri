@@ -1,0 +1,38 @@
+Training Progress - phase_1
+==================================================
+Start: 2025-10-19 22:27:03
+Samples: 0 to 8000 (8000 samples)
+Batches: 250, Batch size: 32
+Total training samples: 8000
+==================================================
+
+2025-10-19 22:29:04 - [phase_1] Batch 10/250 (4.0%) - Loss: -0.056392 - Avg Loss: -0.035387 - Time: 11.97s
+2025-10-19 22:31:04 - [phase_1] Batch 20/250 (8.0%) - Loss: -0.104937 - Avg Loss: -0.058975 - Time: 12.03s
+2025-10-19 22:33:06 - [phase_1] Batch 30/250 (12.0%) - Loss: -0.189836 - Avg Loss: -0.087628 - Time: 11.98s
+2025-10-19 22:35:15 - [phase_1] Batch 40/250 (16.0%) - Loss: -0.379860 - Avg Loss: -0.137038 - Time: 13.40s
+2025-10-19 22:37:18 - [phase_1] Batch 50/250 (20.0%) - Loss: -0.675077 - Avg Loss: -0.217014 - Time: 12.35s
+2025-10-19 22:37:18 - Checkpoint saved: ./model_30km_9_4/checkpoint_phase_1_batch_50.pth
+2025-10-19 22:39:28 - [phase_1] Batch 60/250 (24.0%) - Loss: -0.886942 - Avg Loss: -0.315427 - Time: 12.81s
+2025-10-19 22:41:35 - [phase_1] Batch 70/250 (28.0%) - Loss: -0.964308 - Avg Loss: -0.404191 - Time: 12.36s
+2025-10-19 22:43:40 - [phase_1] Batch 80/250 (32.0%) - Loss: -0.988560 - Avg Loss: -0.476200 - Time: 13.33s
+2025-10-19 22:45:44 - [phase_1] Batch 90/250 (36.0%) - Loss: -0.994651 - Avg Loss: -0.533586 - Time: 12.42s
+2025-10-19 22:47:47 - [phase_1] Batch 100/250 (40.0%) - Loss: -0.997069 - Avg Loss: -0.579837 - Time: 12.34s
+2025-10-19 22:47:48 - Checkpoint saved: ./model_30km_9_4/checkpoint_phase_1_batch_100.pth
+2025-10-19 22:49:52 - [phase_1] Batch 110/250 (44.0%) - Loss: -0.997934 - Avg Loss: -0.617816 - Time: 12.35s
+2025-10-19 22:51:57 - [phase_1] Batch 120/250 (48.0%) - Loss: -0.998428 - Avg Loss: -0.649518 - Time: 13.27s
+2025-10-19 22:54:01 - [phase_1] Batch 130/250 (52.0%) - Loss: -0.998729 - Avg Loss: -0.676371 - Time: 12.47s
+2025-10-19 22:56:04 - [phase_1] Batch 140/250 (56.0%) - Loss: -0.998934 - Avg Loss: -0.699405 - Time: 12.34s
+2025-10-19 22:58:08 - [phase_1] Batch 150/250 (60.0%) - Loss: -0.999094 - Avg Loss: -0.719380 - Time: 12.35s
+2025-10-19 22:58:08 - Checkpoint saved: ./model_30km_9_4/checkpoint_phase_1_batch_150.pth
+2025-10-19 23:00:13 - [phase_1] Batch 160/250 (64.0%) - Loss: -0.999222 - Avg Loss: -0.736866 - Time: 13.32s
+2025-10-19 23:02:17 - [phase_1] Batch 170/250 (68.0%) - Loss: -0.999328 - Avg Loss: -0.752302 - Time: 12.48s
+2025-10-19 23:04:21 - [phase_1] Batch 180/250 (72.0%) - Loss: -0.999416 - Avg Loss: -0.766029 - Time: 12.37s
+2025-10-19 23:06:26 - [phase_1] Batch 190/250 (76.0%) - Loss: -0.999491 - Avg Loss: -0.778315 - Time: 12.37s
+2025-10-19 23:08:35 - [phase_1] Batch 200/250 (80.0%) - Loss: -0.999555 - Avg Loss: -0.789375 - Time: 13.51s
+2025-10-19 23:08:35 - Checkpoint saved: ./model_30km_9_4/checkpoint_phase_1_batch_200.pth
+2025-10-19 23:10:43 - [phase_1] Batch 210/250 (84.0%) - Loss: -0.999610 - Avg Loss: -0.799385 - Time: 13.01s
+2025-10-19 23:12:49 - [phase_1] Batch 220/250 (88.0%) - Loss: -0.999657 - Avg Loss: -0.808488 - Time: 12.51s
+2025-10-19 23:14:55 - [phase_1] Batch 230/250 (92.0%) - Loss: -0.999697 - Avg Loss: -0.816800 - Time: 12.48s
+2025-10-19 23:17:01 - [phase_1] Batch 240/250 (96.0%) - Loss: -0.999732 - Avg Loss: -0.824422 - Time: 13.46s
+2025-10-19 23:19:06 - [phase_1] Batch 250/250 (100.0%) - Loss: -0.999762 - Avg Loss: -0.831435 - Time: 12.65s
+2025-10-19 23:19:06 - Checkpoint saved: ./model_30km_9_4/checkpoint_phase_1_batch_250.pth

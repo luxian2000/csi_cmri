@@ -1,0 +1,12 @@
+{
+    "epoch": 1,
+    "train_loss": -0.8314353548996151,
+    "val_loss": -0.9997574090957642,
+    "learning_rate": 0.01,
+    "timestamp": "2025-10-19 17:31:11",
+    "epoch_time": 3802.60692691803,
+    "val_time": 751.6700286865234,
+    "total_elapsed_time": 3802.6069288253784,
+    "total_batches": 250,
+    "batch_size": 32
+}
