@@ -411,11 +411,8 @@ def train_phase(phase_config, previous_history=None):
     
     print(f"Selected {len(val_subset)} validation samples and {len(test_subset)} test samples")
     
-    # 定义优化器 - 使用更先进的优化器和学习率调度策略
-    optimizer = torch.optim.AdamW([C_WEIGHT, C_BIAS, Q_WEIGHT], lr=base_lr, weight_decay=1e-4)
-    
-    # 使用余弦退火学习率调度器，每个阶段内动态调整学习率
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=total_batches, eta_min=base_lr*0.1)
+    # 定义优化器 - 使用L-BFGS-B优化器替代AdamW
+    optimizer = torch.optim.LBFGS([C_WEIGHT, C_BIAS, Q_WEIGHT], lr=base_lr, max_iter=20, history_size=100)
     
     # 添加梯度裁剪防止梯度爆炸
     max_grad_norm = 1.0
@@ -450,7 +447,7 @@ def train_phase(phase_config, previous_history=None):
     
     total_train_loss = 0
     
-    print(f"[{phase_name}] Training started with adaptive LR and gradient clipping")
+    print(f"[{phase_name}] Training started with L-BFGS-B optimizer")
     
     for batch_num in range(1, total_batches + 1):
         batch_start_time = time.time()
@@ -470,10 +467,9 @@ def train_phase(phase_config, previous_history=None):
             return loss
         
         batch_loss = optimizer.step(closure)
-        scheduler.step()  # 更新学习率
         total_train_loss += batch_loss.item()
         
-        current_lr = scheduler.get_last_lr()[0]
+        # L-BFGS-B不使用传统学习率调度器
         
         # 每10个批次记录一次损失函数
         if batch_num % 10 == 0 or batch_num == total_batches:
@@ -483,7 +479,7 @@ def train_phase(phase_config, previous_history=None):
             
             progress_info = (f"[{phase_name}] Batch {batch_num}/{total_batches} "
                            f"({progress:.1f}%) - Loss: {batch_loss.item():.6f} - "
-                           f"Avg Loss: {avg_loss_so_far:.6f} - LR: {current_lr:.6f} - "
+                           f"Avg Loss: {avg_loss_so_far:.6f} - "
                            f"Time: {batch_time:.2f}s")
             
             print(f"  ↳ {progress_info}")
